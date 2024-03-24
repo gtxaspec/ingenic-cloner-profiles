@@ -1,0 +1,43 @@
+name: cloner
+
+on:
+  workflow_dispatch:
+
+env:
+  TERM: linux
+
+jobs:
+  buildroot:
+    name: cloner_profile
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Get short SHA
+        id: slug
+        run: echo "::set-output name=sha7::$(git rev-parse --short HEAD)"
+
+      - name: Zip repo files
+        run: |
+          zip -r cloner_profile_${{ steps.slug.outputs.sha7 }}.ingenic .
+        shell: bash
+
+      - name: Set ZIP filename environment variable
+        run: echo "ZIP_NAME=cloner_profile_${{ steps.slug.outputs.sha7 }}.ingenic" >> $GITHUB_ENV
+
+      - name: Upload cloner as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.ZIP_NAME }}
+          path: ${{ env.ZIP_NAME }}
+
+      - name: Upload cloner
+        if: github.event_name != 'pull_request'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: latest
+          files: ${{ env.ZIP_NAME }}
