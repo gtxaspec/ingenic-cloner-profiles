@@ -23,11 +23,11 @@ jobs:
 
       - name: Zip repo files
         run: |
-          zip -r cloner_profile_${{ steps.slug.outputs.sha7 }}.ingenic .
+          zip -r cloner_profiles.ingenic .
         shell: bash
 
       - name: Set ZIP filename environment variable
-        run: echo "ZIP_NAME=cloner_profile_${{ steps.slug.outputs.sha7 }}.ingenic" >> $GITHUB_ENV
+        run: echo "ZIP_NAME=cloner_profiles.ingenic" >> $GITHUB_ENV
 
       - name: Upload cloner as artifact
         uses: actions/upload-artifact@v4
