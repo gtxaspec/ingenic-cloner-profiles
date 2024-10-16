@@ -1,0 +1,74 @@
+name: cloner-package-linux
+
+on:
+  workflow_dispatch:
+
+env:
+  TERM: linux
+  VERSION: 2.5.43
+
+jobs:
+  buildroot:
+    name: cloner_profile
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Clone ingenic-cloner-archives
+        run: git clone https://github.com/gtxaspec/ingenic-cloner-archives
+
+      - name: Create temporary directory
+        run: mkdir -p cloner-tmp
+
+      - name: Extract 7zip archives
+        working-directory: cloner-tmp
+        run: 7z x ../ingenic-cloner-archives/linux/${{ env.VERSION }}/cloner-${{ env.VERSION }}-ubuntu_alpha.tar.gz.tar.7z.000
+
+      - name: Extract tar.gz.tar archive
+        working-directory: cloner-tmp
+        run: tar -xf cloner-${{ env.VERSION }}-ubuntu_alpha.tar.gz.tar
+
+      - name: Extract tar.gz archive
+        working-directory: cloner-tmp
+        run: tar -xf cloner-${{ env.VERSION }}-ubuntu_alpha.tar.gz
+
+      - name: Copy repository data
+        working-directory: cloner-tmp
+        run: |
+          cp -R ../0_Firmware_Root cloner-${{ env.VERSION }}-ubuntu_alpha/
+          cp -R ../configs cloner-${{ env.VERSION }}-ubuntu_alpha/
+          cp -R ../ddrs cloner-${{ env.VERSION }}-ubuntu_alpha/
+          cp -R ../firmwares cloner-${{ env.VERSION }}-ubuntu_alpha/
+
+      - name: Prune unnecessary content
+        working-directory: cloner-tmp
+        run: |
+          rm -rf cloner-${{ env.VERSION }}-ubuntu_alpha/adb
+          rm -rf cloner-${{ env.VERSION }}-ubuntu_alpha/scripts
+          rm -rf cloner-${{ env.VERSION }}-ubuntu_alpha/security
+          rm -rf cloner-${{ env.VERSION }}-ubuntu_alpha/securitytool
+          rm -rf cloner-${{ env.VERSION }}-ubuntu_alpha/docs
+
+      - name: Compress final archive
+        working-directory: cloner-tmp
+        run: |
+          mv cloner-${{ env.VERSION }}-ubuntu_alpha cloner-${{ env.VERSION }}-ubuntu_thingino
+          tar -cf - cloner-${{ env.VERSION }}-ubuntu_thingino | xz -9 -c > cloner-${{ env.VERSION }}-ubuntu_thingino.tar.xz
+          echo "ZIP_NAME=$(pwd)/cloner-${{ env.VERSION }}-ubuntu_thingino.tar.xz" >> $GITHUB_ENV
+
+      - name: Upload cloner package as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cloner-${{ env.VERSION }}-ubuntu_thingino
+          path: ${{ env.ZIP_NAME }}
+
+      - name: Upload cloner package
+        if: github.event_name != 'pull_request'
+        uses: softprops/action-gh-release@master
+        with:
+          tag_name: latest
+          files: ${{ env.ZIP_NAME }}
