@@ -5,12 +5,12 @@ on:
 
 env:
   TERM: linux
-  VERSION: 2.5.43
+  VERSION: 2.5.50
 
 jobs:
   buildroot:
     name: cloner_profile
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
 
