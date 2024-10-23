@@ -41,17 +41,7 @@ jobs:
         run: |
           cp -R ../0_Firmware_Root cloner-${{ env.VERSION }}-windows_alpha/cloner-${{ env.VERSION }}-windows_alpha
           cp -R ../configs cloner-${{ env.VERSION }}-windows_alpha/cloner-${{ env.VERSION }}-windows_alpha
-          cp -R ../ddrs cloner-${{ env.VERSION }}-windows_alpha/cloner-${{ env.VERSION }}-windows_alpha
           cp -R ../firmwares cloner-${{ env.VERSION }}-windows_alpha/cloner-${{ env.VERSION }}-windows_alpha
-
-      - name: Prune unnecessary content
-        working-directory: cloner-tmp
-        run: |
-          rm -rf cloner-${{ env.VERSION }}-windows_alpha/cloner-${{ env.VERSION }}-windows_alpha/adb
-          rm -rf cloner-${{ env.VERSION }}-windows_alpha/cloner-${{ env.VERSION }}-windows_alpha/scripts
-          rm -rf cloner-${{ env.VERSION }}-windows_alpha/cloner-${{ env.VERSION }}-windows_alpha/security
-          rm -rf cloner-${{ env.VERSION }}-windows_alpha/cloner-${{ env.VERSION }}-windows_alpha/securitytool
-          rm -rf cloner-${{ env.VERSION }}-windows_alpha/cloner-${{ env.VERSION }}-windows_alpha/docs
 
       - name: Compress final archive
         working-directory: cloner-tmp
