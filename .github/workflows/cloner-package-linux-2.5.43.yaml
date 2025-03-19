@@ -1,11 +1,11 @@
-name: cloner-package-linux
+name: cloner-package-linux-2.5.43
 
 on:
   workflow_dispatch:
 
 env:
   TERM: linux
-  VERSION: 2.5.50
+  VERSION: 2.5.43
 
 jobs:
   buildroot:
