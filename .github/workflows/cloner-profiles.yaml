@@ -1,4 +1,4 @@
-name: cloner
+name: cloner_profile
 
 on:
   workflow_dispatch:
