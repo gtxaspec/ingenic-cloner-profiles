@@ -7,11 +7,13 @@ tailored to streamline the process of firmware backup and updates for a range of
 ### Supported Devices:
 
 - A1
+- C100
 - T10/T20
 - T21
 - T23
 - T30
 - T31
+- T32
 - T40
 - T41
 
